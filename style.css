@@ -1,136 +1,125 @@
 :root{
   --bg:#f4f6fb; --bg-accent:#eef3ff;
   --card:#ffffff; --ink:#111827; --muted:#6b7280; --ring:rgba(17,24,39,.12);
-  --edu:#3b82f6; --culture:#10b981; --social:#f59e0b; --intl:#8b5cf6; --lang:#ef4444; --web:#ec4899;
+  --edu:#3b82f6; --culture:#10b981; --social:#f59e0b; --lang:#ef4444; --web:#ec4899;
   --radius:16px; --shadow:0 12px 28px rgba(17,24,39,.10); --shadow-lg:0 32px 80px rgba(17,24,39,.18);
+  --grid-line:#dbe4f3;
 }
+
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; color:var(--ink);
+  -webkit-tap-highlight-color: transparent;
   background:
     radial-gradient(70rem 70rem at -10% -20%, var(--bg-accent) 0%, transparent 55%) no-repeat,
     radial-gradient(70rem 70rem at 110% 10%, #fff7ed 0%, transparent 60%) no-repeat,
     var(--bg);
-  display:flex; flex-direction:column; align-items:center; gap:20px; padding:20px;
+  display:flex; flex-direction:column; align-items:center; gap:20px; padding:24px;
 }
+
 .app{width:min(1150px,95vw)}
 header{
   display:flex; align-items:center; justify-content:space-between; gap:14px;
   background:var(--card); border:1px solid var(--ring); border-radius:var(--radius);
-  padding:12px 14px; box-shadow:var(--shadow);
+  padding:14px 16px; box-shadow:var(--shadow);
 }
 .h-left{display:flex; flex-direction:column; gap:2px}
-h1{font-size:20px; margin:0}
-.h-sub{color:var(--muted); font-size:12px; margin:0}
+h1{font-size:22px; margin:0}
+.h-sub{color:var(--muted); font-size:13px; margin:0}
 .legend{display:flex; gap:8px; flex-wrap:wrap}
 .tag{font-size:11px; padding:4px 8px; border-radius:999px; background:#fff; border:1px solid var(--ring)}
-.legend .tag[data-cat="international"]{border-color:var(--intl); color:var(--intl)}
 .legend .tag[data-cat="culture"]{border-color:var(--culture); color:var(--culture)}
 .legend .tag[data-cat="social"]{border-color:var(--social); color:var(--social)}
 .legend .tag[data-cat="edu"]{border-color:var(--edu); color:var(--edu)}
 .legend .tag[data-cat="lang"]{border-color:var(--lang); color:var(--lang)}
 .legend .tag[data-cat="web"]{border-color:var(--web); color:var(--web)}
 
-/* Takvim sarmalayıcı: mobilde yana kaydırılabilir */
+/* --- TELEFONDA TAM GENİŞLİK (YATAY KAYDIRMA YOK) --- */
 .calendar-wrap{
-  background:var(--card); border:1px solid var(--ring); border-radius:var(--radius);
-  box-shadow:var(--shadow); overflow-x:auto; -webkit-overflow-scrolling:touch;
+  background:var(--card); border:1px solid var(--ring); border-radius:var(--radius); box-shadow:var(--shadow);
+  overflow:hidden; /* yatay kaydırma kaldırıldı */
 }
-.calendar{min-width:640px;} /* daha küçük min-width → iPhone’da daha az boşluk */
+.calendar{width:100%} /* min-width kaldırıldı */
 .weekdays,.grid{display:grid; grid-template-columns:repeat(7,1fr)}
 .weekdays{
   position:sticky; top:0; z-index:2;
-  background:#fbfbfd; color:var(--muted); font-size:11px; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
-  border-bottom:1px solid var(--ring);
+  background:#fbfbfd; color:var(--muted); font-size:12px; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
+  border-bottom:1px solid var(--grid-line);
 }
-.weekdays>div{padding:8px; text-align:center}
-.grid{gap:1px; background:#e6ecf7}
+.weekdays>div{padding:10px; text-align:center}
+
+/* Hücre ızgarası: çizgiler net olsun */
+.grid{background:#fff}
 .day{
-  background:#ffffff; min-height:95px; padding:7px; display:flex; flex-direction:column; gap:6px; cursor:pointer;
+  background:#ffffff; 
+  min-height:clamp(64px, 12vw, 110px); /* ekrana göre yükseklik uyumlu */
+  padding:8px; display:flex; flex-direction:column; gap:8px; position:relative;
+  cursor:pointer; transition:transform .12s ease, box-shadow .15s ease, background .15s ease;
+  box-shadow: inset 0 0 0 1px var(--grid-line); /* keskin çizgi */
+  margin:-0.5px; /* çizgilerin birleşmesini sağlar */
+}
+.day:hover{transform:translateY(-2px); box-shadow:inset 0 0 0 1px var(--grid-line), 0 8px 18px rgba(17,24,39,.08); background:#fcfdff}
+.day.other{background:#f7f8fa; color:#a1a1aa}
+.date{font-size:12px; color:#64748b; font-weight:700}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{
+  font-size:11px; padding:5px 7px; border-radius:999px; border:1px solid var(--ring);
+  background:#fff; cursor:pointer; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   transition:transform .12s ease, box-shadow .15s ease, background .15s ease;
 }
-.day:hover{transform:translateY(-2px); box-shadow:0 8px 18px rgba(17,24,39,.08); background:#fcfdff}
-.day.other{background:#f7f8fa; color:#a1a1aa}
-.date{font-size:11px; color:#64748b; font-weight:700}
-.chips{display:flex; flex-wrap:wrap; gap:5px}
-.chip{
-  font-size:10.5px; padding:4px 6px; border-radius:999px; border:1px solid var(--ring); background:#fff;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;
-}
-.more{font-size:10.5px; color:var(--muted)}
+.chip:hover{transform:scale(1.03); box-shadow:0 6px 14px rgba(17,24,39,.08); background:#fdfdfd}
 .chip[data-cat="edu"]{color:var(--edu); border-color:color-mix(in srgb, var(--edu), white 70%)}
 .chip[data-cat="culture"]{color:var(--culture); border-color:color-mix(in srgb, var(--culture), white 70%)}
 .chip[data-cat="social"]{color:var(--social); border-color:color-mix(in srgb, var(--social), white 70%)}
-.chip[data-cat="international"]{color:var(--intl); border-color:color-mix(in srgb, var(--intl), white 70%)}
 .chip[data-cat="lang"]{color:var(--lang); border-color:color-mix(in srgb, var(--lang), white 70%)}
 .chip[data-cat="web"]{color:var(--web); border-color:color-mix(in srgb, var(--web), white 70%)}
+.more{font-size:11px; color:var(--muted)}
 
 /* Modal */
-.modal{position:fixed; inset:0; display:none; place-items:center; background:rgba(15,23,42,.28); padding:12px; backdrop-filter:blur(2px)}
+.modal{position:fixed; inset:0; display:none; place-items:center; background:rgba(15,23,42,.28); padding:16px; backdrop-filter:blur(2px)}
 .modal.open{display:grid}
 .sheet{
-  width:min(980px,100%); background:var(--card); border:1px solid var(--ring);
-  border-radius:18px; overflow:hidden; box-shadow:var(--shadow-lg);
+  width:min(980px,100%); background:var(--card); border:1px solid var(--ring); border-radius:20px; overflow:hidden; box-shadow:var(--shadow-lg);
   transform:scale(.96); opacity:0; animation:pop .2s ease forwards;
 }
 @keyframes pop{to{transform:scale(1); opacity:1}}
-.sheet-grid{display:grid; grid-template-columns:1.1fr 1fr}
-.media{background:#f3f4f6; min-height:300px}
+.sheet-grid{display:grid; grid-template-columns:1.15fr 1fr}
+.media{background:#f3f4f6; min-height:320px}
 .media img{width:100%; height:100%; object-fit:cover; display:block}
-.info{padding:14px; display:flex; flex-direction:column; gap:10px}
-.etk-title{font-size:20px; font-weight:900; margin:0}
-.etk-date{font-size:12px; color:var(--muted); font-weight:800}
-.etk-desc{line-height:1.55; margin:0}
-.close{position:absolute; right:12px; top:10px}
-.btn-ghost{background:#fff; border:1px solid var(--ring); color:#111827; border-radius:10px; padding:6px 10px; cursor:pointer}
+.info{padding:18px; display:flex; flex-direction:column; gap:12px}
+.etk-title{font-size:22px; font-weight:900; margin:0}
+.etk-date{font-size:13px; color:var(--muted); font-weight:800}
+.etk-desc{line-height:1.6; margin:0}
+.close{position:absolute; right:16px; top:12px}
+.btn-ghost{background:#ffffff; border:1px solid var(--ring); color:#111827; border-radius:10px; padding:6px 10px; cursor:pointer; transition:transform .12s ease, box-shadow .15s ease, background .15s ease}
+.btn-ghost:hover{transform:scale(1.03); box-shadow:0 6px 14px rgba(17,24,39,.08); background:#f8fafc}
 
 /* Çekmece */
 .drawer{position:fixed; left:0; right:0; bottom:0; max-height:82vh; background:var(--card); border-top:1px solid var(--ring); border-radius:18px 18px 0 0; display:none; box-shadow:var(--shadow-lg)}
 .drawer.open{display:block}
-.drawer-hd{display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid var(--ring)}
+.drawer-hd{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--ring)}
 .drawer-ttl{font-weight:900}
-.drawer-body{padding:10px 14px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.drawer-body{padding:10px 16px; display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
 .evcard{background:#fff; border:1px solid var(--ring); border-radius:14px; overflow:hidden; cursor:pointer; transition:transform .12s ease, box-shadow .15s ease}
 .evcard:hover{transform:translateY(-2px); box-shadow:0 10px 20px rgba(17,24,39,.08)}
 .evthumb{aspect-ratio:16/9; background:#f3f4f6}
 .evthumb img{width:100%; height:100%; object-fit:cover}
-.evbody{padding:8px}
+.evbody{padding:10px}
 .evtitle{font-weight:800}
 .evtime{font-size:12px; color:var(--muted)}
 
-/* Mobil Ajanda */
-.agenda{
-  display:none; /* desktop’ta görünmez */
-  margin-top:12px; background:var(--card); border:1px solid var(--ring); border-radius:var(--radius);
-  box-shadow:var(--shadow);
-}
-.agenda .a-item{display:flex; gap:10px; padding:10px 12px; border-top:1px solid var(--ring); align-items:center}
-.agenda .a-item:first-child{border-top:none}
-.agenda .a-date{min-width:78px; text-align:center; font-weight:800; color:#334155}
-.agenda .a-dot{width:8px; height:8px; border-radius:999px}
-.agenda .a-title{font-weight:700}
-.agenda .a-time{font-size:12px; color:var(--muted)}
-
-/* Renk noktaları */
-.a-item[data-cat="edu"] .a-dot{background:var(--edu)}
-.a-item[data-cat="culture"] .a-dot{background:var(--culture)}
-.a-item[data-cat="social"] .a-dot{background:var(--social)}
-.a-item[data-cat="international"] .a-dot{background:var(--intl)}
-.a-item[data-cat="lang"] .a-dot{background:var(--lang)}
-.a-item[data-cat="web"] .a-dot{background:var(--web)}
-
-/* Küçük ekran ayarları */
-@media (max-width:900px){ .sheet-grid{grid-template-columns:1fr} }
-@media (max-width:760px){
-  body{padding:14px}
+/* Küçük ekran uyarlamaları */
+@media (max-width: 900px){ .sheet-grid{grid-template-columns:1fr} }
+@media (max-width: 760px){
+  body{padding:16px}
   .app{width:100%}
-  .calendar{min-width:600px}
+  .day{min-height:clamp(60px, 13vw, 100px); padding:7px}
+  .date{font-size:11px}
+  .chip{font-size:10px; padding:4px 6px; max-width:100%}
   .drawer-body{grid-template-columns:repeat(2,1fr)}
 }
-@media (max-width:480px){
-  .calendar{min-width:560px}           /* iPhone dar ekran için daha da küçük */
-  .day{min-height:84px}
+@media (max-width: 480px){
+  .day{min-height:clamp(56px, 14vw, 92px); padding:6px}
   .drawer-body{grid-template-columns:1fr}
-  .agenda{display:block}               /* mobilde Ajanda'yı aç */
 }
