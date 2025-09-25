@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bu Ayın Etkinlik Takvimi</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="h-left">
+        <h1 id="monthTitle">Bu Ay – Etkinlik Takvimi</h1>
+        <p class="h-sub">Gün hücresine veya etkinlik çipine tıklayın; görsel büyütülür.</p>
+      </div>
+      <div class="legend">
+        <span class="tag" data-cat="international">International</span>
+        <span class="tag" data-cat="culture">Kültür</span>
+        <span class="tag" data-cat="social">Sosyal</span>
+        <span class="tag" data-cat="edu">Eğitim</span>
+        <span class="tag" data-cat="lang">Dil</span>
+        <span class="tag" data-cat="web">Webinar</span>
+      </div>
+    </header>
+
+    <section class="calendar">
+      <div class="weekdays">
+        <div>Pzt</div><div>Sal</div><div>Çar</div><div>Per</div>
+        <div>Cum</div><div>Cmt</div><div>Paz</div>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </div>
+
+  <!-- Gün çekmecesi -->
+  <div class="drawer" id="drawer">
+    <div class="drawer-hd">
+      <div class="drawer-ttl" id="drawerTitle">Gün</div>
+      <button class="btn-ghost" id="drawerClose" aria-label="Kapat">✕</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+  </div>
+
+  <!-- Etkinlik modalı -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="sheet" id="sheet">
+      <button class="btn-ghost close" id="modalClose" aria-label="Kapat">✕</button>
+      <div class="sheet-grid">
+        <figure class="media"><img id="evImg" alt="Etkinlik görseli"></figure>
+        <div class="info">
+          <h2 class="etk-title" id="evTitle">Başlık</h2>
+          <div class="etk-date" id="evDate">Tarih · Saat</div>
+          <p class="etk-desc" id="evDesc">Açıklama</p>
+          <div class="legend" id="evTags"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
