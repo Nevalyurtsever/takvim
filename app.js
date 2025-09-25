@@ -9,7 +9,7 @@ function trDate(iso){
   return d.toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric',weekday:'long'});
 }
 
-// International kaldırıldı
+// International kaldırıldı (kasıtlı olarak yok)
 function categoryLabel(c){
   return ({culture:'Kültür',social:'Sosyal',edu:'Eğitim',lang:'Dil',web:'Webinar'}[c] || 'Etkinlik');
 }
@@ -25,7 +25,7 @@ function placeholderDataURL(title){
 }
 function safeImg(img,title){ img.loading='lazy'; img.onerror=()=>{ img.src=placeholderDataURL(title); } }
 
-// ---- ETKİNLİKLER (International yok) ----
+// ---- ETKİNLİKLER ----
 const EVENTS = [
   { id:'2025-10-11-yap-offline', title:'YAP Offline Toplantısı', date:'2025-10-11', time:'13:00', category:'social',
     image:'assets/yap-offline.jpg', detailImage:'assets/yap-offline.jpg',
@@ -72,7 +72,7 @@ const EVENTS = [
     location:'CIC Warsaw', summary:'Başlangıç seviye Lehçe pratik oturumu.', tags:['Dil'] },
 ];
 
-// ------ TAKVİM OLUŞTUR ------
+// ---- Takvim kur ----
 function buildCalendar(){
   const first=new Date(YEAR,MONTH,1);
   const startOffset=(first.getDay()+6)%7;
@@ -119,66 +119,9 @@ function buildCalendar(){
     }
     grid.appendChild(cell);
   }
-
-  // Takvim çizildikten sonra sığdır
-  fitCalendarToViewport();
 }
 
-// ------ MOBİLDE TÜM AYI EKRANA SIĞDIR ------
-function getViewportHeight(){
-  // iOS adres çubuğu dalgalanmalarına dayanıklı
-  return (window.visualViewport && window.visualViewport.height) || window.innerHeight;
-}
-
-function fitCalendarToViewport(){
-  const cal = $('#calendarRoot');
-  const wrap = $('.calendar-wrap');
-  if(!cal || !wrap) return;
-
-  // Ölçek sadece küçük ekranlarda (≤ 768px)
-  const small = window.matchMedia('(max-width: 768px)').matches;
-
-  // Önce ölçeği sıfırla, gerçek yüksekliği ölç
-  cal.style.transform = 'none';
-  wrap.style.height = 'auto';
-
-  if(!small){
-    // Masaüstünde dokunma: doğal boy
-    return;
-  }
-
-  const headerH = $('header').offsetHeight || 0;
-  const paddingAround = parseFloat(getComputedStyle(document.body).paddingTop) +
-                        parseFloat(getComputedStyle(document.body).paddingBottom);
-
-  // modal/çekmece kapalıyken mevcut içerik yüksekliği
-  const available = getViewportHeight() - headerH - 16 /*wrap üst boşluk tahmini*/ - 8;
-
-  const calendarHeight = cal.offsetHeight;
-
-  // Kullanılabilir yüksekliğe göre ölçek (1’den büyük olmasın)
-  const scale = Math.min(1, (available / calendarHeight));
-
-  // Güvenli marj
-  const s = Math.max(0.6, scale); // en fazla %40 küçült
-
-  cal.style.transform = `scale(${s})`;
-  cal.style.transformOrigin = 'top center';
-  // Sarmalayıcı yüksekliğini, ölçeklenmiş boy kadar sabitle ki altta boşluk kalmasın
-  wrap.style.height = `${Math.ceil(calendarHeight * s)}px`;
-}
-
-// Ekran değişimlerinde tekrar uygula
-window.addEventListener('resize', fitCalendarToViewport);
-window.addEventListener('orientationchange', fitCalendarToViewport);
-
-// iOS Safari’de URL çubuğu hareketleri için
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', fitCalendarToViewport);
-  window.visualViewport.addEventListener('scroll', fitCalendarToViewport);
-}
-
-// ------ GÜN ÇEKMECESİ ------
+// ---- Gün çekmecesi ----
 function openDayDrawer(y,m,d,list){
   $('#drawerTitle').textContent=new Date(y,m,d).toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric',weekday:'long'});
   const body=$('#drawerBody'); body.innerHTML='';
@@ -207,7 +150,7 @@ function buildEventCard(ev){
   return a;
 }
 
-// ------ MODAL ------
+// ---- Modal ----
 function openEvent(ev){
   $('#evTitle').textContent=ev.title;
   $('#evDate').textContent=`${trDate(ev.date)}${ev.time?' · '+ev.time:''}`;
@@ -237,5 +180,5 @@ $('#modalClose').addEventListener('click', closeEvent);
 $('#modal').addEventListener('click', e=>{ if(e.target.id==='modal') closeEvent(); });
 document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeEvent(); closeDayDrawer(); }});
 
-// ------ BAŞLAT ------
+// Başlat
 buildCalendar();

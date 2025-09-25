@@ -35,20 +35,20 @@ h1{font-size:22px; margin:0}
 .legend .tag[data-cat="lang"]{border-color:var(--lang); color:var(--lang)}
 .legend .tag[data-cat="web"]{border-color:var(--web); color:var(--web)}
 
-/* --- TAKVİM --- */
+/* --- TELEFONDA YATAY KAYDIRMA AÇIK --- */
 .calendar-wrap{
   background:var(--card); border:1px solid var(--ring); border-radius:var(--radius); box-shadow:var(--shadow);
-  /* Dikey kaydırma serbest, yatay gizli */
-  overflow-x:hidden; overflow-y:visible;
+  overflow-x:auto;                 /* << yatay scroll */
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;/* iOS inertial scroll */
+  touch-action: pan-x;             /* parmakla sağa-sola kaydır */
 }
 .calendar{
-  width:100%;
-  transform-origin: top center;           /* JS burada ölçekleyecek */
-  will-change: transform;
+  min-width: 720px;                /* 7 sütun yan yana sığsın, viewport küçükse taşsın */
 }
 .weekdays,.grid{display:grid; grid-template-columns:repeat(7,1fr)}
 .weekdays{
-  position:sticky; top:0; z-index:3;
+  position:sticky; top:0; z-index:2; /* scroll konteyneri içinde yapışkan */
   background:#fbfbfd; color:var(--muted); font-size:12px; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
   border-bottom:1px solid var(--grid-line);
 }
@@ -57,7 +57,7 @@ h1{font-size:22px; margin:0}
 .grid{background:#fff}
 .day{
   background:#ffffff;
-  min-height:clamp(66px, 12.5vw, 110px);
+  min-height:110px;
   padding:8px; display:flex; flex-direction:column; gap:8px; position:relative;
   cursor:pointer; transition:transform .12s ease, box-shadow .15s ease, background .15s ease;
   box-shadow: inset 0 0 0 1px var(--grid-line);
@@ -115,19 +115,19 @@ h1{font-size:22px; margin:0}
 .evthumb img{width:100%; height:100%; object-fit:cover}
 .evbody{padding:10px}
 .evtitle{font-weight:800}
-.evtime{font-size:12px; color:var(--muted)}
+.evtime{
+  font-size: 12px;
+  color: var(--muted);               /* doğru */
+  /* istersen emniyetli fallback: */
+  /* color: var(--muted, #6b7280); */
+}
 
-/* Küçük ekran */
-@media (max-width: 900px){ .sheet-grid{grid-template-columns:1fr} }
+/* Küçük ekran ek ayarları (min-width değişmiyor!) */
 @media (max-width: 760px){
   body{padding:16px}
   .app{width:100%}
-  .day{min-height:clamp(60px, 13vw, 100px); padding:7px}
-  .date{font-size:11px}
-  .chip{font-size:10px; padding:4px 6px; max-width:100%}
-  .drawer-body{grid-template-columns:repeat(2,1fr)}
+  .chip{font-size:10px; padding:4px 6px}
 }
 @media (max-width: 480px){
-  .day{min-height:clamp(56px, 14vw, 92px); padding:6px}
-  .drawer-body{grid-template-columns:1fr}
+  .calendar{min-width:660px} /* iPhone dar ekranda bile swipe için genişlik */
 }
