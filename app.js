@@ -9,7 +9,7 @@ function trDate(iso){
   return d.toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric',weekday:'long'});
 }
 
-// International kaldırıldı (kasıtlı olarak yok)
+// "International" kaldırıldı
 function categoryLabel(c){
   return ({culture:'Kültür',social:'Sosyal',edu:'Eğitim',lang:'Dil',web:'Webinar'}[c] || 'Etkinlik');
 }
@@ -75,7 +75,7 @@ const EVENTS = [
 // ---- Takvim kur ----
 function buildCalendar(){
   const first=new Date(YEAR,MONTH,1);
-  const startOffset=(first.getDay()+6)%7;
+  const startOffset=(first.getDay()+6)%7; // Pazartesi=0
   const daysInMonth=new Date(YEAR,MONTH+1,0).getDate();
   const daysInPrev=new Date(YEAR,MONTH,0).getDate();
 
@@ -161,6 +161,7 @@ function openEvent(ev){
   const cat=document.createElement('span'); cat.className='tag'; cat.textContent=categoryLabel(ev.category); tagBox.appendChild(cat);
   (ev.tags||[]).forEach(t=>{ const s=document.createElement('span'); s.className='tag'; s.textContent=t; tagBox.appendChild(s); });
 
+  // Arka plan kaymasını kilitle
   document.body.dataset.scrollLock = '1';
   document.body.style.overflow = 'hidden';
 
@@ -171,6 +172,7 @@ function closeEvent(){
   $('#modal').classList.remove('open');
   $('#modal').setAttribute('aria-hidden','true');
 
+  // Kaydırmayı geri aç
   if (document.body.dataset.scrollLock){
     document.body.style.overflow = '';
     delete document.body.dataset.scrollLock;
