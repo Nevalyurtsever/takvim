@@ -181,7 +181,7 @@ const EVENTS = [
     time: "10:00",
     category: "lang",
     image: "assets/pexels-karolina-grabowska-4887203.jpg", // elinde görsel yoksa geçici
-    detailImage: "assets/kitap.jpg",
+    detailImage: "assets/pexels-karolina-grabowska-4887203.jpg",
     location: "CIC Warsaw",
     summary: "Başlangıç seviye Lehçe pratik oturumu.",
     tags: ["Dil"],
