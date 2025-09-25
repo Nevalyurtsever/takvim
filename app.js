@@ -9,12 +9,11 @@ function trDate(iso){
   return d.toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric',weekday:'long'});
 }
 
-// "International" kaldırıldı
+// International kaldırıldı
 function categoryLabel(c){
   return ({culture:'Kültür',social:'Sosyal',edu:'Eğitim',lang:'Dil',web:'Webinar'}[c] || 'Etkinlik');
 }
 
-// Görsel hatasında yedek
 function placeholderDataURL(title){
   const svg=`<svg xmlns='http://www.w3.org/2000/svg' width='1280' height='720'>
     <defs><linearGradient id='g' x1='0' x2='1'><stop offset='0%' stop-color='#eaf2ff'/><stop offset='100%' stop-color='#fff7ed'/></linearGradient></defs>
@@ -26,7 +25,7 @@ function placeholderDataURL(title){
 }
 function safeImg(img,title){ img.loading='lazy'; img.onerror=()=>{ img.src=placeholderDataURL(title); } }
 
-// ---- ETKİNLİKLER (International kaldırıldı) ----
+// ---- ETKİNLİKLER (International yok) ----
 const EVENTS = [
   { id:'2025-10-11-yap-offline', title:'YAP Offline Toplantısı', date:'2025-10-11', time:'13:00', category:'social',
     image:'assets/yap-offline.jpg', detailImage:'assets/yap-offline.jpg',
@@ -102,7 +101,7 @@ function buildCalendar(){
       const dayEvents=EVENTS.filter(ev=>sameDay(ev.date,YEAR,MONTH,dayNum))
         .sort((a,b)=>(a.time||'00:00').localeCompare(b.time||'00:00'));
 
-      // Küçük ekranlarda çok taşmayı azaltmak için 3 yerine 2 çip göster
+      // Küçük ekranda taşmayı azalt
       const isSmall = window.matchMedia('(max-width: 480px)').matches;
       const maxChips = isSmall ? 2 : 3;
 
@@ -134,8 +133,9 @@ function openDayDrawer(y,m,d,list){
     list.forEach(ev=>body.appendChild(buildEventCard(ev)));
   }
   $('#drawer').classList.add('open');
+  $('#drawer').setAttribute('aria-hidden','false');
 }
-function closeDayDrawer(){ $('#drawer').classList.remove('open'); }
+function closeDayDrawer(){ $('#drawer').classList.remove('open'); $('#drawer').setAttribute('aria-hidden','true'); }
 $('#drawerClose').addEventListener('click', closeDayDrawer);
 
 function buildEventCard(ev){
@@ -162,9 +162,23 @@ function openEvent(ev){
   const cat=document.createElement('span'); cat.className='tag'; cat.textContent=categoryLabel(ev.category); tagBox.appendChild(cat);
   (ev.tags||[]).forEach(t=>{ const s=document.createElement('span'); s.className='tag'; s.textContent=t; tagBox.appendChild(s); });
 
-  $('#modal').classList.add('open'); $('#modal').setAttribute('aria-hidden','false');
+  // Arka plan kaymasını engelle
+  document.body.dataset.scrollLock = '1';
+  document.body.style.overflow = 'hidden';
+
+  $('#modal').classList.add('open');
+  $('#modal').setAttribute('aria-hidden','false');
 }
-function closeEvent(){ $('#modal').classList.remove('open'); $('#modal').setAttribute('aria-hidden','true'); }
+function closeEvent(){
+  $('#modal').classList.remove('open');
+  $('#modal').setAttribute('aria-hidden','true');
+
+  // Kaydırmayı geri aç
+  if (document.body.dataset.scrollLock){
+    document.body.style.overflow = '';
+    delete document.body.dataset.scrollLock;
+  }
+}
 $('#modalClose').addEventListener('click', closeEvent);
 $('#modal').addEventListener('click', e=>{ if(e.target.id==='modal') closeEvent(); });
 document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeEvent(); closeDayDrawer(); }});
