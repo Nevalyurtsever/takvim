@@ -37,11 +37,14 @@ h1{font-size:22px; margin:0}
 
 /* --- TELEFONDA YATAY KAYDIRMA AÇIK --- */
 .calendar-wrap{
-  background:var(--card); border:1px solid var(--ring); border-radius:var(--radius); box-shadow:var(--shadow);
-  overflow-x:auto;                 /* << yatay scroll */
-  overflow-y:hidden;
-  -webkit-overflow-scrolling:touch;/* iOS inertial scroll */
-  touch-action: pan-x;             /* parmakla sağa-sola kaydır */
+  background:var(--card);
+  border:1px solid var(--ring);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow-x:auto;                  /* sağa-sola kaydırma açık */
+  overflow-y:auto;                  /* ↓↓ bunu ekle (dikey kaydırma) */
+  -webkit-overflow-scrolling:touch; /* iOS’ta pürüzsüz kaydırma */
+  touch-action: pan-x pan-y;        /* hem yatay hem dikey */
 }
 .calendar{
   min-width: 720px;                /* 7 sütun yan yana sığsın, viewport küçükse taşsın */
