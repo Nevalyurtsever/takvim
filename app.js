@@ -72,7 +72,7 @@ const EVENTS = [
     location:'CIC Warsaw', summary:'Başlangıç seviye Lehçe pratik oturumu.', tags:['Dil'] },
 ];
 
-// ---- Takvim kur ----
+// ------ TAKVİM OLUŞTUR ------
 function buildCalendar(){
   const first=new Date(YEAR,MONTH,1);
   const startOffset=(first.getDay()+6)%7;
@@ -101,7 +101,6 @@ function buildCalendar(){
       const dayEvents=EVENTS.filter(ev=>sameDay(ev.date,YEAR,MONTH,dayNum))
         .sort((a,b)=>(a.time||'00:00').localeCompare(b.time||'00:00'));
 
-      // Küçük ekranda taşmayı azalt
       const isSmall = window.matchMedia('(max-width: 480px)').matches;
       const maxChips = isSmall ? 2 : 3;
 
@@ -120,9 +119,66 @@ function buildCalendar(){
     }
     grid.appendChild(cell);
   }
+
+  // Takvim çizildikten sonra sığdır
+  fitCalendarToViewport();
 }
 
-// ---- Gün çekmecesi ----
+// ------ MOBİLDE TÜM AYI EKRANA SIĞDIR ------
+function getViewportHeight(){
+  // iOS adres çubuğu dalgalanmalarına dayanıklı
+  return (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+}
+
+function fitCalendarToViewport(){
+  const cal = $('#calendarRoot');
+  const wrap = $('.calendar-wrap');
+  if(!cal || !wrap) return;
+
+  // Ölçek sadece küçük ekranlarda (≤ 768px)
+  const small = window.matchMedia('(max-width: 768px)').matches;
+
+  // Önce ölçeği sıfırla, gerçek yüksekliği ölç
+  cal.style.transform = 'none';
+  wrap.style.height = 'auto';
+
+  if(!small){
+    // Masaüstünde dokunma: doğal boy
+    return;
+  }
+
+  const headerH = $('header').offsetHeight || 0;
+  const paddingAround = parseFloat(getComputedStyle(document.body).paddingTop) +
+                        parseFloat(getComputedStyle(document.body).paddingBottom);
+
+  // modal/çekmece kapalıyken mevcut içerik yüksekliği
+  const available = getViewportHeight() - headerH - 16 /*wrap üst boşluk tahmini*/ - 8;
+
+  const calendarHeight = cal.offsetHeight;
+
+  // Kullanılabilir yüksekliğe göre ölçek (1’den büyük olmasın)
+  const scale = Math.min(1, (available / calendarHeight));
+
+  // Güvenli marj
+  const s = Math.max(0.6, scale); // en fazla %40 küçült
+
+  cal.style.transform = `scale(${s})`;
+  cal.style.transformOrigin = 'top center';
+  // Sarmalayıcı yüksekliğini, ölçeklenmiş boy kadar sabitle ki altta boşluk kalmasın
+  wrap.style.height = `${Math.ceil(calendarHeight * s)}px`;
+}
+
+// Ekran değişimlerinde tekrar uygula
+window.addEventListener('resize', fitCalendarToViewport);
+window.addEventListener('orientationchange', fitCalendarToViewport);
+
+// iOS Safari’de URL çubuğu hareketleri için
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', fitCalendarToViewport);
+  window.visualViewport.addEventListener('scroll', fitCalendarToViewport);
+}
+
+// ------ GÜN ÇEKMECESİ ------
 function openDayDrawer(y,m,d,list){
   $('#drawerTitle').textContent=new Date(y,m,d).toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric',weekday:'long'});
   const body=$('#drawerBody'); body.innerHTML='';
@@ -151,7 +207,7 @@ function buildEventCard(ev){
   return a;
 }
 
-// ---- Modal ----
+// ------ MODAL ------
 function openEvent(ev){
   $('#evTitle').textContent=ev.title;
   $('#evDate').textContent=`${trDate(ev.date)}${ev.time?' · '+ev.time:''}`;
@@ -162,7 +218,6 @@ function openEvent(ev){
   const cat=document.createElement('span'); cat.className='tag'; cat.textContent=categoryLabel(ev.category); tagBox.appendChild(cat);
   (ev.tags||[]).forEach(t=>{ const s=document.createElement('span'); s.className='tag'; s.textContent=t; tagBox.appendChild(s); });
 
-  // Arka plan kaymasını engelle
   document.body.dataset.scrollLock = '1';
   document.body.style.overflow = 'hidden';
 
@@ -173,7 +228,6 @@ function closeEvent(){
   $('#modal').classList.remove('open');
   $('#modal').setAttribute('aria-hidden','true');
 
-  // Kaydırmayı geri aç
   if (document.body.dataset.scrollLock){
     document.body.style.overflow = '';
     delete document.body.dataset.scrollLock;
@@ -183,5 +237,5 @@ $('#modalClose').addEventListener('click', closeEvent);
 $('#modal').addEventListener('click', e=>{ if(e.target.id==='modal') closeEvent(); });
 document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeEvent(); closeDayDrawer(); }});
 
-// Başlat
+// ------ BAŞLAT ------
 buildCalendar();

@@ -35,21 +35,25 @@ h1{font-size:22px; margin:0}
 .legend .tag[data-cat="lang"]{border-color:var(--lang); color:var(--lang)}
 .legend .tag[data-cat="web"]{border-color:var(--web); color:var(--web)}
 
-/* --- TELEFONDA TAM GENİŞLİK, YATAY KAYDIRMA YOK --- */
+/* --- TAKVİM --- */
 .calendar-wrap{
   background:var(--card); border:1px solid var(--ring); border-radius:var(--radius); box-shadow:var(--shadow);
-  overflow:hidden;
+  /* Dikey kaydırma serbest, yatay gizli */
+  overflow-x:hidden; overflow-y:visible;
 }
-.calendar{width:100%}
+.calendar{
+  width:100%;
+  transform-origin: top center;           /* JS burada ölçekleyecek */
+  will-change: transform;
+}
 .weekdays,.grid{display:grid; grid-template-columns:repeat(7,1fr)}
 .weekdays{
-  position:sticky; top:0; z-index:3; /* modalın altında kalmaması için düşük */
+  position:sticky; top:0; z-index:3;
   background:#fbfbfd; color:var(--muted); font-size:12px; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
   border-bottom:1px solid var(--grid-line);
 }
 .weekdays>div{padding:10px; text-align:center}
 
-/* Hücre ızgarası: çizgiler net */
 .grid{background:#fff}
 .day{
   background:#ffffff;
@@ -57,7 +61,7 @@ h1{font-size:22px; margin:0}
   padding:8px; display:flex; flex-direction:column; gap:8px; position:relative;
   cursor:pointer; transition:transform .12s ease, box-shadow .15s ease, background .15s ease;
   box-shadow: inset 0 0 0 1px var(--grid-line);
-  margin:-0.5px; z-index:0; /* modal üstüne çıkmasın */
+  margin:-0.5px; z-index:0;
 }
 .day:hover{transform:translateY(-2px); box-shadow:inset 0 0 0 1px var(--grid-line), 0 8px 18px rgba(17,24,39,.08); background:#fcfdff}
 .day.other{background:#f7f8fa; color:#a1a1aa}
@@ -76,11 +80,11 @@ h1{font-size:22px; margin:0}
 .chip[data-cat="web"]{color:var(--web); border-color:color-mix(in srgb, var(--web), white 70%)}
 .more{font-size:11px; color:var(--muted)}
 
-/* Modal en önde */
+/* Modal hep en önde */
 .modal{
   position:fixed; inset:0; display:none; place-items:center;
   background:rgba(15,23,42,.28); padding:16px; backdrop-filter:blur(2px);
-  z-index:9999; /* hafta başlıkları ve her şeyin üstünde */
+  z-index:9999;
 }
 .modal.open{display:grid}
 .sheet{
@@ -113,7 +117,7 @@ h1{font-size:22px; margin:0}
 .evtitle{font-weight:800}
 .evtime{font-size:12px; color:var(--muted)}
 
-/* Küçük ekran uyarlamaları */
+/* Küçük ekran */
 @media (max-width: 900px){ .sheet-grid{grid-template-columns:1fr} }
 @media (max-width: 760px){
   body{padding:16px}
